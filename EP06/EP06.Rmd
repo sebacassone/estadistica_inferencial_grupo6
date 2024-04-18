@@ -30,18 +30,50 @@ library(tidyverse)
 #Lectura de archivo
 # Se abre el CSV
 
-datos <- read.csv2("C:\\Users\\BastiánBritoGarrido\\Desktop\\Estadistica\\EP06 Datos.csv")
+datos <- read.csv("C:\\Users\\BastiánBritoGarrido\\Desktop\\Estadistica\\EP06 Datos.csv")
 
 ```
 
 # En este momento, los investigadores buscan determinar si existen diferencias en el tiempo que tardan los usuarios en formular consultas para problemas con diferente nivel de dificultad en el área de leyes.
 
-H0: No existen diferencias en el tiempo que tardan en formular consultas en el área de leyes.
-Ha: Existe alguna diferencia en el timepo que tardan en formular consultas en el área de leyes.
+H0: No existen diferencias en el tiempo que tardan en formular consultas de diferentes niveles, en el área de leyes.
+Ha: Existe alguna diferencia en el timepo que tardan en formular consultas de difentes niveles, en el área de leyes.
 
 ```{r}
 # Filtrar por tipo de cubo y países
 datos_filtrados <- datos %>%
-  filter()
+  filter(area == "Leyes")
 ```
+
+Para usar Anova se tienen que cumplir estas 4 condiciones:
+
+
+## 1.- La escala con que se midede la variable dependiente tiene las propiedades de una escala de intervalos iguales
+
+Se cumple que los intervalos de la variable dependiente (tiempo) posee propiedades de una escala de intervalos iguales(La diferencia entre 10 y 20 seg, es la misma entre 20 y 30 seg)
+
+## 2.- Las mediciones son independientes al interior de cada grupo
+
+El enunciado señala que el proceso de selección de las personas garantiza el cumplimiento, ya que reclutaron voluntarios asignados aleatoriamente a distintos grupos
+
+## 3.- Los datos siguen una distribucion parecida a la normal
+
+```{r}
+#Comprobamos la normalidad de los datos con el test de Shapiro
+
+shapiro <- shapiro.test(datos_filtrados$tiempo)
+shapiro
+
+
+```
+Como muestra la prueba Shapiro-Wilk el p-value es mayor a el alfa (0.05), comprobando la nomralidad de los datos.
+
+
+
+## 4.- La matriz de varianzas-covarianzas es esférica.
+```{r}
+#Se usa Mauchly
+
+```
+
 
