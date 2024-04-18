@@ -71,9 +71,9 @@ Como muestra la prueba Shapiro-Wilk el p-value es mayor a el alfa (0.05), compro
 
 
 ## 4.- La matriz de varianzas-covarianzas es esférica.
-```{r}
-#Se usa Mauchly
 
-```
+Se usara la prueba de Mauchly dentro de la función azAnova(), comprobaremos que se cumpla después de aplicar el test.
 
+
+Con esto se comprueban todas las condiciones para usar el test de Anova para muestras Correlacionadas
 
