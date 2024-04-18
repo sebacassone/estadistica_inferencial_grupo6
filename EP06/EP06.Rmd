@@ -1,0 +1,47 @@
+---
+title: "EP06"
+author: "Bastian Brito, Sebastian Cassone"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+#Importamos las librerías
+if (!requireNamespace('dplyr', quietly = TRUE)){
+  install.packages('dplyr')
+}
+if (!requireNamespace('tidyverse', quietly = TRUE)){
+  install.packages('tidyverse')
+}
+if (!requireNamespace('car', quietly = TRUE)){
+  install.packages('car')
+}
+
+library(car)
+library(dplyr)
+library(tidyverse)
+```
+
+```{r}
+#Lectura de archivo
+# Se abre el CSV
+
+datos <- read.csv2("C:\\Users\\BastiánBritoGarrido\\Desktop\\Estadistica\\EP06 Datos.csv")
+
+```
+
+# En este momento, los investigadores buscan determinar si existen diferencias en el tiempo que tardan los usuarios en formular consultas para problemas con diferente nivel de dificultad en el área de leyes.
+
+H0: No existen diferencias en el tiempo que tardan en formular consultas en el área de leyes.
+Ha: Existe alguna diferencia en el timepo que tardan en formular consultas en el área de leyes.
+
+```{r}
+# Filtrar por tipo de cubo y países
+datos_filtrados <- datos %>%
+  filter()
+```
+
