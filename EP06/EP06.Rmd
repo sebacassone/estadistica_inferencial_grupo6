@@ -103,6 +103,12 @@ mixto <- lme(tiempo ~ dificultad, data = datos_filtrados, random = ~1|id)
 medias <- emmeans(mixto, "dificultad")
 tukey <- pairs(medias, adjust = "tukey")
 print(tukey)
+
+# Se grafica el tamaño del efecto
+tamaño_efecto <- ezPlot(data = datos_filtrados, dv = tiempo, wid = id, within = dificultad, y_lab= "Tiempo promedio que tarda formular consultas", x = dificultad)
+tamaño_efecto <- tamaño_efecto + theme_pubr()
+
+print(tamaño_efecto)
 ```
 
-Con lo anterior, podemos observar que entre todas las dificultades hay diferencias significativas ya que el p-value es menor que la significancia siendo un 0.05. Por lo que se concluye que hay diferencias entre todas las medias de tiempo que tardan en formular consultas para problemas con diferente nivel de dificultad en el área de leyes,
+Con lo anterior, podemos observar que entre todas las dificultades hay diferencias significativas ya que el p-value es menor que la significancia siendo un 0.05. Por lo que se concluye que hay diferencias entre todas las medias de tiempo que tardan en formular consultas para problemas con diferente nivel de dificultad en el área de leyes.
