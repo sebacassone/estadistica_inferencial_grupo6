@@ -46,8 +46,8 @@ datos_filtrados
 
 En este momento, los investigadores buscan determinar si existen diferencias en el tiempo que tardan los usuarios en formular consultas para problemas con diferente nivel de dificultad en el área de leyes.
 
-H0: No existen diferencias en la media del tiempo que tardan en formular consultas para problemas con diferente nivel de dificultad en el área de leyes.
-Ha: Existe al menos una diferencia en las medias con respecto al tiempo que tardan en formular consultas para problemas con diferente nivel de dificultad en el área de leyes.
+H0: No existen diferencias en la media del tiempo que tardan en formular consultas las mismas personas para problemas con diferente nivel de dificultad en el área de leyes.
+Ha: Existe al menos una diferencia en las medias con respecto al tiempo que tardan en formular consultas las mismas personas para problemas con diferente nivel de dificultad en el área de leyes.
 
 Para usar Anova se tienen que cumplir estas 4 condiciones:
 
@@ -93,7 +93,7 @@ print(summary(prueba_anova$aov))
 print(prueba_anova$`Mauchly's Test for Sphericity`)
 ```
 Con respecto a la prueba de esfericididad de Mauchly se acepta la hipótesis nula de que la matriz de varianzas y covarianzas es esférica por lo que se cumple todas las condiciones de ANOVA de una vía para muestras correlacionadas.
-Con el p-value < 2e-16 y este a su vez es menor que la signficancia considerada para este experimiento del 0.05, rechazamos la hipótesis nula y aceptamos la hipótesis alternativa de que existe al menos una diferencia en las medias con respecto al tiempo que tardan en formular consultas para problemas con diferente nivel de dificultad en el área de leyes.
+Con el p-value < 2e-16 y este a su vez es menor que la signficancia considerada para este experimiento del 0.05, rechazamos la hipótesis nula y aceptamos la hipótesis alternativa de que existe al menos una diferencia en las medias con respecto al tiempo que tardan en formular consultas las mismas personas para problemas con diferente nivel de dificultad en el área de leyes
 
 Luego, hacemos un análsis post-hoc para determinar cuál o cuales son las dificultades que tienen una media de tiempo diferente, para esto utilizaremos el procedimiento HSD de Tukey.
 
@@ -111,4 +111,4 @@ tamaño_efecto <- tamaño_efecto + theme_pubr()
 print(tamaño_efecto)
 ```
 
-Con lo anterior, podemos observar que entre todas las dificultades hay diferencias significativas ya que el p-value es menor que la significancia siendo un 0.05. Por lo que se concluye que hay diferencias entre todas las medias de tiempo que tardan en formular consultas para problemas con diferente nivel de dificultad en el área de leyes.
+Con lo anterior, podemos observar que entre todas las dificultades hay diferencias significativas ya que el p-value es menor que la significancia siendo un 0.05. Por lo que se concluye que hay hay diferencias en las medias con respecto al tiempo que tardan en formular consultas las mismas personas para problemas con diferente nivel de dificultad en el área de leyes.
