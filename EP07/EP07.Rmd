@@ -1,0 +1,155 @@
+---
+title: "EP07"
+author: "Bastian Brito, Sebastian Cassone"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+# Importamos las librerías
+library(dplyr)
+library(ggpubr)
+library(ez)
+library(emmeans)
+library(nlme)
+
+#Lectura de archivo
+# Se abre el CSV
+
+datos <- read.csv("C:\\Users\\BastiánBritoGarrido\\Desktop\\estadistica_inferencial_grupo6\\EP07\\EP07 Datos.csv")
+
+```
+
+# Enunciado
+En el trabajo de título de una estudiante del DIINF se reportan tiempos de ejecución (en milisegundos) y la cercanía con la solución óptima (en por ciento) de la mejor solución encontrada con tres versiones de un algoritmo genético para resolver instancias del problema del vendedor viajero disponibles en repositorios públicos. Ahora debe enfrentar el análisis de estos datos, por que está solicitando ayuda de las y los estudiantes de Estadística Inferencial.
+
+# Pregunta
+## 1. 
+
+### Observando los datos, la memorista sospecha que hay diferencias significativas en el tiempo de ejecución entre las versiones A y C del algoritmo cuando las instancias tienen 60 o más nodos. ¿Los datos respaldan la intuición de la memorista?
+
+### Para responder, filtren los datos para tener las instancias con 60 o más nodos y seleccionen las columnas de los tiempos de ejecución de las versiones A y C en formato ancho. Usando como semilla el valor 33, obtenga muestras aleatorias independientes de 24 tiempos registrados por la versión A y 18 tiempos registrados por la versión C del algoritmo. Realicen un análisis estadístico pertinente (enunciar hipótesis, revisar condiciones, seleccionar prueba) para responder la pregunta planteada, utilizando pruebas no paramétricas de ser necesario.
+
+```{r}
+#Fijamos la semilla
+set.seed(33)
+
+# Filtramos los datos por instancias con 60 nodos 
+datos_60ANodos <- datos %>%
+  filter(n.nodos >= 60)
+
+# Se deja solo las mediciones de el algoritmo A y C
+
+datos_filtrados1 <- datos_60ANodos %>%
+  select(-tiempo.B, -mejor.B)
+
+# Sacamos los 24 tiempo random para A
+muestras_A <- datos_filtrados1 %>% 
+  select(tiempo.A) %>% 
+  sample_n(24)
+
+# Sacamos los 18 tiempo random para C
+muestras_C <- datos_filtrados1 %>% 
+  select(tiempo.C) %>% 
+  sample_n(18)
+
+```
+
+
+## 2. 
+
+### La memorista también sospecha que, al comparar las mismas instancias de iguales características, las mejores soluciones encontradas por las versiones A y B tienen rendimientos distintos. ¿Estará en lo cierto?
+
+### Para responder, filtren los datos para tener las instancias con 60 o más nodos y seleccionen las columnas con el mejor rendimiento de las versiones A y B en formato ancho. Usando como semilla el valor 33, obtengan una muestra aleatoria de 22 instancias. Realicen un análisis estadístico pertinente (enunciar hipótesis, revisar condiciones, seleccionar prueba) para responder la pregunta planteada, utilizando pruebas no paramétricas de ser necesario.
+
+```{r}
+
+#Fijamos la semilla
+set.seed(33)
+
+
+# Filtramos los datos por instancias con 60 nodos 
+datos_60Aristas <- datos %>%
+  filter(n.nodos >= 60)
+
+# Se deja solo las mediciones de el algoritmo A y B
+
+datos_filtrados2 <- datos_60Aristas %>%
+  select(-tiempo.A,-tiempo.B,-tiempo.C,-mejor.C)
+
+
+# Sacamos los 24 tiempo random para A
+muestras_A <- datos_filtrados2 %>% 
+  select(tiempo.A) %>% 
+  sample_n(24)
+
+# Sacamos los 18 tiempo random para C
+muestras_C <- datos_filtrados1 %>% 
+  select(tiempo.C) %>% 
+  sample_n(18)
+
+```
+
+
+## 3.-
+
+### La memorista sospecha que hay diferencias significativas en el tiempo de ejecución entre las versiones del algoritmo cuando las instancias de prueba tienen 45 o más nodos. ¿Los datos respaldan la intuición de la memorista?
+### Para responder, filtren los datos para tener las instancias con 45 o más nodos y seleccionen las columnas con los tiempos de ejecución registrados (en formato ancho). Usando como semilla el valor 43, obtengan muestras aleatorias independientes de 15, 15 y 14 tiempos registrados por las versiones A, B y C, respectivamente. Realicen un análisis estadístico pertinente (enunciar hipótesis, revisar condiciones, seleccionar prueba) para responder la pregunta planteada, utilizando pruebas no paramétricas de ser necesario.
+
+
+```{r}
+
+#Fijamos la semilla
+set.seed(43)
+
+
+
+# Filtramos los datos por instancias con 60 nodos 
+datos_45Nodos <- datos %>%
+  filter(n.nodos >= 45)
+
+# Se deja solo las mediciones de el algoritmo A y B
+
+datos_filtrados3 <- datos_45ANodos %>%
+  select(-mejor.A,-mejor.B,-mejor.C)
+
+
+# Sacamos los 15 tiempo random para A
+muestras_A <- datos_filtrados1 %>% 
+  select(tiempo.A) %>% 
+  sample_n(15)
+
+# Sacamos los 15 tiempo random para B
+muestras_A <- datos_filtrados3 %>% 
+  select(tiempo.B) %>% 
+  sample_n(15)
+
+# Sacamos los 14 tiempo random para C
+muestras_C <- datos_filtrados3 %>% 
+  select(tiempo.C) %>% 
+  sample_n(15)
+```
+
+## 4.-
+### La memorista también sospecha que, al comparar las mismas instancias con iguales características, las mejores soluciones encontradas por las diferentes versiones del algoritmo tienen rendimientos distintos. ¿Estará en lo cierto?
+### Para responder, filtren los datos para tener las instancias con 45 o más nodos y seleccionen las columnas con los mejores rendimientos registrados. Usando como semilla el valor 71, obtengan una muestra aleatoria de 23 instancias. Realicen un análisis estadístico pertinente (enunciar hipótesis, revisar condiciones, seleccionar prueba) para responder la pregunta planteada, utilizando pruebas no paramétricas de ser necesario.
+
+```{r}
+
+#Fijamos la semilla
+set.seed(71)
+
+# Filtramos los datos por instancias con 60 nodos 
+datos_45Nodos <- datos %>%
+  filter(n.nodos >= 45)
+
+# Se deja solo las mediciones de el algoritmo A y B
+
+datos_filtrados3 <- datos_45ANodos %>%
+  select(-tiempo.A,-tiempo.B,-tiempo.C)
+```
+
