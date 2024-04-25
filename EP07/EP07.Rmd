@@ -39,12 +39,12 @@ En el trabajo de título de una estudiante del DIINF se reportan tiempos de ejec
 set.seed(33)
 
 # Filtramos los datos por instancias con 60 nodos 
-datos_60ANodos <- datos %>%
+datos_60Nodos1 <- datos %>%
   filter(n.nodos >= 60)
 
 # Se deja solo las mediciones de el algoritmo A y C
 
-datos_filtrados1 <- datos_60ANodos %>%
+datos_filtrados1 <- datos_60Nodos1 %>%
   select(-tiempo.B, -mejor.B)
 
 # Sacamos los 24 tiempo random para A
@@ -73,24 +73,14 @@ set.seed(33)
 
 
 # Filtramos los datos por instancias con 60 nodos 
-datos_60Aristas <- datos %>%
+datos_60Nodos2 <- datos %>%
   filter(n.nodos >= 60)
 
 # Se deja solo las mediciones de el algoritmo A y B
-
-datos_filtrados2 <- datos_60Aristas %>%
+datos_filtrados2 <- datos_60Nodos2 %>%
   select(-tiempo.A,-tiempo.B,-tiempo.C,-mejor.C)
 
-
-# Sacamos los 24 tiempo random para A
-muestras_A <- datos_filtrados2 %>% 
-  select(tiempo.A) %>% 
-  sample_n(24)
-
-# Sacamos los 18 tiempo random para C
-muestras_C <- datos_filtrados1 %>% 
-  select(tiempo.C) %>% 
-  sample_n(18)
+datos_aleatorios2 <- sample_n(datos_filtrados2,22)
 
 ```
 
@@ -106,15 +96,13 @@ muestras_C <- datos_filtrados1 %>%
 #Fijamos la semilla
 set.seed(43)
 
-
-
 # Filtramos los datos por instancias con 60 nodos 
-datos_45Nodos <- datos %>%
+datos_45Nodos3 <- datos %>%
   filter(n.nodos >= 45)
 
 # Se deja solo las mediciones de el algoritmo A y B
 
-datos_filtrados3 <- datos_45ANodos %>%
+datos_filtrados3 <- datos_45Nodos3 %>%
   select(-mejor.A,-mejor.B,-mejor.C)
 
 
@@ -144,12 +132,15 @@ muestras_C <- datos_filtrados3 %>%
 set.seed(71)
 
 # Filtramos los datos por instancias con 60 nodos 
-datos_45Nodos <- datos %>%
+datos_45Nodos4 <- datos %>%
   filter(n.nodos >= 45)
 
 # Se deja solo las mediciones de el algoritmo A y B
 
-datos_filtrados3 <- datos_45ANodos %>%
+datos_filtrados4 <- datos_45Nodos4 %>%
   select(-tiempo.A,-tiempo.B,-tiempo.C)
+
+datos_aleatorios4 <- sample_n(datos_filtrados4,23)
+
 ```
 
