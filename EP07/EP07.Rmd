@@ -16,11 +16,14 @@ library(ggpubr)
 library(ez)
 library(emmeans)
 library(nlme)
+library(coin)
 
 #Lectura de archivo
 # Se abre el CSV
 
 datos <- read.csv("C:\\Users\\BastiánBritoGarrido\\Desktop\\estadistica_inferencial_grupo6\\EP07\\EP07 Datos.csv")
+
+
 
 ```
 
@@ -58,6 +61,41 @@ muestras_C <- datos_filtrados1 %>%
   sample_n(18)
 
 ```
+Primero probaremos la normalidad de los datos con Shapiro-Wilk
+```{r}
+# Comprobamos la normalidad de los datos con el test de Shapiro
+shapiro_A <- shapiro.test(muestras_A$tiempo.A)
+shapiro_C <- shapiro.test(muestras_C$tiempo.C)
+shapiro_A
+shapiro_C
+
+```
+Como nuestro el p value de la prueba shapiro en las muestras de A es menor a nuestro nivel de significancia (alfa = 0.05), podemos decir que las observaciones no siguen una distribución normal.
+
+Como no siguen una distribución normal y los datos son muestras Pareadas, se usara la prueba no parametrica "Prueba de rangos con signo de Wilcoxon", ya que no se puede usar la prueba t studenen ni la z.
+
+Las condicions para la Prueba de rangos con signo de Wilcoxon son :
+ - 1. Los pares de observaciones son independientes
+ - 2. La escala de  medicón empleada para las observaiones es intrínsecamente continua
+ - 3. La escala de medicón empleada para ambas muestras debe ser a lo menos ordinal
+
+La condición 1 se cumple porque cada instancia no depende de la otra, la condición 2 se cumple ya que la escala de medición es el tiempo y puede tomar cualquier valor dentro de un intervalo especificado como lo son los milisegundos. La condición 3 se cumple ya que los datos son cuantitativos y continuos
+
+Ho: No hay diferencia en el tiempo de los algoritmos en la misma insntancia con respecto la media de los tiempos de ejecución entre las versiones A y C del algoritmo para instancias con 60 o más nodos.
+
+Ha: Existe una diferencia en la media de los tiempos de ejecución entre las versiones A y C del algoritmo para instancias con 60 o más nodos.
+
+
+```{r}
+alfa <- 0.05
+
+#Aplicamo la prueba de wilcoxon
+prueba1 <- wilcoxsign_test(muestras_A$tiempo.A,muestras_C$tiempo.C, alternative = "two.sided", paired = TRUE, conf.level = 1-alfa)
+
+print(prueba1)
+```
+
+
 
 
 ## 2. 
