@@ -87,8 +87,10 @@ Como se puede apreciar en el gráfico todas las muestras siguen razonablemente u
 Una vez verificadas las tres condiciones (la cuarta se verificará una vez hecha la prueba) se hace la prueba de ANOVA para muestras correlacionadas.
 ```{r}
 # Se hace la prueba de ANOVA para muestras correlacionadas.
-prueba_anova <- ezANOVA(data = datos_filtrados, dv = tiempo, within = dificultad,
-                          wid = id, return_aov = TRUE)
+prueba_anova <- ezANOVA(
+  data = datos_filtrados, dv = tiempo, within = dificultad,
+  wid = id, return_aov = TRUE
+)
 print(summary(prueba_anova$aov))
 print(prueba_anova$`Mauchly's Test for Sphericity`)
 ```
@@ -99,13 +101,13 @@ Luego, hacemos un análsis post-hoc para determinar cuál o cuales son las dific
 
 ```{r}
 # Se hace la prueba post-hoc HSD de Tukey
-mixto <- lme(tiempo ~ dificultad, data = datos_filtrados, random = ~1|id)
+mixto <- lme(tiempo ~ dificultad, data = datos_filtrados, random = ~ 1 | id)
 medias <- emmeans(mixto, "dificultad")
 tukey <- pairs(medias, adjust = "tukey")
 print(tukey)
 
 # Se grafica el tamaño del efecto
-tamaño_efecto <- ezPlot(data = datos_filtrados, dv = tiempo, wid = id, within = dificultad, y_lab= "Tiempo promedio que tarda formular consultas", x = dificultad)
+tamaño_efecto <- ezPlot(data = datos_filtrados, dv = tiempo, wid = id, within = dificultad, y_lab = "Tiempo promedio que tarda formular consultas", x = dificultad)
 tamaño_efecto <- tamaño_efecto + theme_pubr()
 
 print(tamaño_efecto)
