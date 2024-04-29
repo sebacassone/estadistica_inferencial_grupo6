@@ -219,7 +219,7 @@ Las condiciones de esta prueba son:
   2. La escala de la variable dependiente debe ser, a lo menos ordinal
   3. Las observacones son indepenientes entre sí.
   
-- La condición 1 es cumple ya que, son 3 instancias, por lo que serian 3 niveles <--- revisar
+- La condición 1 es cumple ya que, son 3 instancias (A,B o C), por lo que serian 3 niveles <--- revisar
 - La condición 2 se cumple ya que la variable dependiente es el tiempo, y como es continuo la hace mejor que ordinal.
 -La condición 3 se cumple ya que las muestras se eligen de forma aleatoria y entre par de observaciones son independientes.
 
@@ -276,5 +276,59 @@ datos_filtrados4 <- datos_45Nodos4 %>%
   select(-tiempo.A, -tiempo.B, -tiempo.C)
 
 datos_aleatorios4 <- sample_n(datos_filtrados4, 23)
+
 ```
 
+Primero revisamos la normalidad de los datos con Shapiro-Wilk
+```{r}
+#Proabmos normalidad de los datos, en la resta de cada par de muestras
+A_less_B_less_C <- datos_aleatorios4$mejor.A - datos_aleatorios4$mejor.B - datos_aleatorios4$mejor.C
+
+
+shapiro_4 <- shapiro.test(A_less_B_less_C)
+shapiro_4
+
+```
+Como se ve en las pruebas, el p-values es menor a nuestro nivel de significancia (alfa=0,05), por lo tanto los datos no siguen una distribución normal. 
+
+Como no sigue una distribución normal, consideraremos alguna prueba parametrica, como son más de 2 muestras y los datos estan correlacionados, usaremos la prueba de Frideman.
+
+Las condiciones de esta prueba son:
+
+  1.- La variable independiente debe ser categórica y tener al menos tres niveles.
+  2.- La escala de la variable dependiente debe ser, a lo menos, ordinal.
+  3.- Las observaciones son una muestra aleatoria e independiente de la población.
+  
+
+- La condición 1 es cumple ya que, son 3 instancias (A,B o C), por lo que serian 3 niveles 
+- La condición 2 se cumple ya que la variable dependiente es el tiempo, y como es continuo la hace mejor que ordinal.
+- La condición 3 se cumple ya que las muestras se eligen de forma aleatoria y entre par de observaciones son independientes.
+
+Ho: al comparar las mismas instancias con iguales características, las mejores soluciones encontradas por las diferentes versiones del algoritmo tienen rendimientos iguales.
+Ha: Al comparar las mismas instancias con iguales características, las mejores soluciones encontradas por las diferentes versiones del algoritmo tienen rendimientos distintos.
+
+
+```{r}
+#Fijamos un nivel de significancia
+alfa <- 0.05
+
+#Dejamos todo en una sola columna
+datos4 <- datos_aleatorios4%>% pivot_longer(c("mejor.A", "mejor.B", "mejor.C"),
+  names_to = "Algoritmo", values_to = "Tiempo")
+
+#Usamos la prueba de Frideman
+prueba4 <- friedman.test(Tiempo ~ Algoritmo|instancia, data = datos4)
+prueba4
+```
+Como nuestro p-values es menor a el nivel de significancia, podemos decir con un 95% de confianza, que se rechaza la hipotesis nula, a favor de la hipotesis alternativa, osea, al comparar las mismas instancias con iguales características, las mejores soluciones encontradas por las diferentes versiones del algoritmo tienen rendimientos distintos.
+
+Procederemos a usar un procedimiento post-hoc
+```{r}
+post_hoc4 <- pairwise.wilcox.test(datos4$Tiempo,
+                                  datos4$Algoritmo,
+                                  p.adjust.method = "holm",
+                                  paired = TRUE)
+post_hoc4
+
+```
+Como se puede ver en el procedimiento post-hoc, podemos concluir con un 95% de confianza que existen diferencias significativas entre los tiempos de ejecución de todos los pares de algoritmos, excepto entre los algoritmos B y C.
