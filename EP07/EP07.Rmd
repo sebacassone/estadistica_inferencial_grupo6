@@ -24,7 +24,7 @@ library(coin)
 nombre_archivo <- "EP07 Datos.csv"
 carpeta <- "C:\\Users\\BastiánBritoGarrido\\Desktop\\estadistica_inferencial_grupo6\\EP07"
 ruta <- file.path(carpeta, nombre_archivo)
-datos <- read.csv(ruta,  sep = ",")
+datos <- read.csv(ruta, sep = ",")
 datos
 ```
 
@@ -79,9 +79,9 @@ Las condicions para la Prueba de rangos  de Wilcoxon son :
 
 La condición 1 se cumple porque cada instancia no depende de la otra, la condición 2 se cumple ya que los datos son cuantitativos y continuos
 
-Ho: No hay diferencia en el tiempo de los algoritmos con respecto la media de los tiempos de ejecución entre las versiones A y C del algoritmo para instancias con 60 o más nodos.
+Ho: No hay diferencia en el tiempo de los algoritmos con respecto la mediana de los tiempos de ejecución entre las versiones A y C del algoritmo para instancias con 60 o más nodos.
 
-Ha: Existe una diferencia en la media de los tiempos de ejecución entre las versiones A y C del algoritmo para instancias con 60 o más nodos.
+Ha: Existe una diferencia en la mediana de los tiempos de ejecución entre las versiones A y C del algoritmo para instancias con 60 o más nodos.
 
 
 ```{r}
@@ -93,7 +93,7 @@ prueba1 <- wilcox.test(muestras_A$tiempo.A, muestras_C$tiempo.C, alternative = "
 print(prueba1)
 ```
 
-Como nuestro p-value = 0.9299 y este es mayor que la significancia considerada para este experimento de 0.05, no se puede rechazar la hipótesis nula que no hay diferencia en el tiempo de los algoritmos con respecto la media de los tiempos de ejecución entre las versiones A y C del algoritmo para instancias con 60 o más nodos.
+Como nuestro p-value = 0.9299 y este es mayor que la significancia considerada para este experimento de 0.05, no se puede rechazar la hipótesis nula que no hay diferencia en el tiempo de los algoritmos con respecto la mediana de los tiempos de ejecución entre las versiones A y C del algoritmo para instancias con 60 o más nodos.
 
 
 ## 2. 
@@ -131,10 +131,10 @@ Primero probaremos la normalidad de los datos con Shapiro-Wilk
 ```{r}
 # Comprobamos la normalidad de los datos con el test de Shapiro
 
-#Restamos los porcentajes de los mejore de a menos los mejores de B
+# Restamos los porcentajes de los mejore de a menos los mejores de B
 A_less_B <- datos_aleatorios2$mejor.A - datos_aleatorios2$mejor.B
 
-#Aplicamos Shapiro a la diferencia de los porcentajes
+# Aplicamos Shapiro a la diferencia de los porcentajes
 shapiro_2 <- shapiro.test(A_less_B)
 shapiro_2
 ```
@@ -156,10 +156,9 @@ Procedemos a usar la prueba de rangos con signos
 ```{r}
 alfa <- 0.05
 
-#Aplicamos la prueba de wilcox con datos pareados
-prueba2 <- wilcox.test(datos_aleatorios2$mejor.A, datos_aleatorios2$mejor.B, alternative = "two.sided", paired = TRUE, conf.level = 1-alfa)
+# Aplicamos la prueba de wilcox con datos pareados
+prueba2 <- wilcox.test(datos_aleatorios2$mejor.A, datos_aleatorios2$mejor.B, alternative = "two.sided", paired = TRUE, conf.level = 1 - alfa)
 prueba2
-
 ```
 Como nuestro p.value es menor a nuestro nivel de significancia (alfa = 0.05), podemos decir con un 95% de certeza, que se rechaza la hipotesis nula a favor de la hipotesis alternativa, entonces, podemos decir que al comparar las mismas instancias de iguales características, las mejores soluciones encontradas por las versiones A y B tienen rendimientos distintos. 
 
@@ -206,8 +205,8 @@ Primero, probaremos la normalidad de los datos con el test de Shapiro
 shapiro_3.A <- shapiro.test(muestras_3.A$tiempo.A)
 shapiro_3.B <- shapiro.test(muestras_3.B$tiempo.B)
 shapiro_3.C <- shapiro.test(muestras_3.C$tiempo.C)
-shapiro_3.A  
-shapiro_3.B 
+shapiro_3.A
+shapiro_3.B
 shapiro_3.C
 ```
 Como el p.value de los tiempos de A, es menor a nuestro nivel de significancia (alfa = 0.05), los datos ya no siguen una distribución normal, por lo que tendremos que usar una prueba no parametrica.
@@ -229,16 +228,17 @@ Ho: No hay diferencias significativas en el tiempo de ejecución entre las versi
 Ha: Hay diferencias significativas en el tiempo de ejecución entre las versiones del algoritmo cuando las instancias de prueba tienen 45 o más nodos.
 
 ```{r}
-#Establecemos un nivel de significancia
+# Establecemos un nivel de significancia
 alfa <- 0.05
 
-d.f3 <- data.frame(muestras_3.A,muestras_3.B,muestras_3.C)
+d.f3 <- data.frame(muestras_3.A, muestras_3.B, muestras_3.C)
 
-datos3 <- d.f3 %>% pivot_longer(c("tiempo.A","tiempo.B","tiempo.C"), 
-                        names_to = "Algoritmo", values_to = "Tiempo")
+datos3 <- d.f3 %>% pivot_longer(c("tiempo.A", "tiempo.B", "tiempo.C"),
+  names_to = "Algoritmo", values_to = "Tiempo"
+)
 
-#Usamos la prueba de Kruskal-Wallis
-prueba3 <- kruskal.test(Tiempo~Algoritmo, data = datos3)
+# Usamos la prueba de Kruskal-Wallis
+prueba3 <- kruskal.test(Tiempo ~ Algoritmo, data = datos3)
 prueba3
 ```
 
@@ -248,10 +248,11 @@ Como nuestro p.value es menor a nuestro nivel de significancia (alfa = 0.05), po
 Ahora hacemos el procedimiento post-hoc, para saber cual es el algoritmo que tiene tiempo diferentes
 
 ```{r}
-#Hacemos el post-hoc
-post_hoc3 <- pairwise.wilcox.test(datos3$Tiempo,datos3$Algoritmo,
-                                  p.adjust.method = "holm",
-                                  paired = FALSE)
+# Hacemos el post-hoc
+post_hoc3 <- pairwise.wilcox.test(datos3$Tiempo, datos3$Algoritmo,
+  p.adjust.method = "holm",
+  paired = FALSE
+)
 post_hoc3
 ```
 Como se puede ver en el procedimiento post-hoc, podemos concluir con un 95% de confianza que existen diferencias significativas entre los tiempos de ejecución de todos los pares de algoritmos excepto los algoritmos A y C.
