@@ -22,7 +22,7 @@ library(coin)
 # Lectura de archivo
 # Se abre el CSV
 nombre_archivo <- "EP07 Datos.csv"
-carpeta <- "C:\\Users\\BastiánBritoGarrido\\Desktop\\estadistica_inferencial_grupo6\\EP07"
+carpeta <- "~/Documentos/ejercicios_R/EI/estadistica_inferencial_grupo6/EP07"
 ruta <- file.path(carpeta, nombre_archivo)
 datos <- read.csv(ruta, sep = ",")
 datos
