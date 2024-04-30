@@ -72,9 +72,9 @@ shapiro_A
 shapiro_C
 ```
 
-Como nuestro el p-value de la prueba Shapiro en las muestras de A es menor a nuestro nivel de significancia (alfa = 0.05), podemos decir que las observaciones no siguen una distribución normal.
+Como el valor p de la prueba Shapiro-Wilk en las muestras de A es menor que nuestro nivel de significancia (alfa = 0.05), podemos concluir que las observaciones no siguen una distribución normal.
 
-Como no siguen una distribución normal y los datos son muestras independientes, se usara la prueba no paramétrica "Prueba de Sumas de Rangos de Wilcoxon", ya que no se puede usar la prueba t student ni la prueba z debido a la normalidad.
+Como no siguen una distribución normal y los datos son muestras independientes, se usara la prueba no paramétrica "Prueba de Sumas de Rangos de Wilcoxon", ya que no se puede usar la prueba t student ni la prueba z debido falta de normalidad.
 
 Las condiciones para la prueba de rangos de Wilcoxon son:
  - 1. Los pares de observaciones son independientes
@@ -82,7 +82,7 @@ Las condiciones para la prueba de rangos de Wilcoxon son:
 
 La condición 1 se cumple porque cada instancia no depende de la otra, la condición 2 se cumple ya que los datos son cuantitativos y continuos.
 
-Ho: No hay diferencia en el tiempo de los algoritmos con respecto la mediana de los tiempos de ejecución entre las versiones A y C del algoritmo para instancias con 60 o más nodos.
+Ho: No hay diferencia en el tiempo de los algoritmos con respecto la mediana de los tiempos de ejecución entre las versiones A y C del algoritmo, para instancias con 60 o más nodos.
 
 Ha: Existe una diferencia en la mediana de los tiempos de ejecución entre las versiones A y C del algoritmo para instancias con 60 o más nodos.
 
@@ -208,7 +208,7 @@ shapiro_3.B
 shapiro_3.C
 ```
 
-Como el p.value de los tiempos de A, es menor a nuestro nivel de significancia (alfa = 0.05), los datos ya no siguen una distribución normal, por lo que tendremos que usar una prueba no parametrica.
+Como el p-value de los tiempos de A, es menor a nuestro nivel de significancia (alfa = 0.05), los datos ya no siguen una distribución normal, por lo que tendremos que usar una prueba no parametrica.
 
 Como son más de 2 muestras y los datos son independiente, usaremos Kruskal-Wallis.
 
@@ -243,7 +243,7 @@ prueba3
 
 Como nuestro p.value es menor a nuestro nivel de significancia (alfa = 0.05), podemos decir con un 95% de certeza, que se rechaza la hipotesis nula a favor de la hipotesis alternativa, entonces, podemos decir que hay diferencias significativas en el tiempo de ejecución entre las versiones del algoritmo cuando las instancias de prueba tienen 45 o más nodos.
 
-Ahora hacemos el procedimiento post-hoc, para saber cual es el algoritmo que tiene tiempo diferentes.
+Ahora hacemos el procedimiento post-hoc, para saber cúal es el algoritmo que tiene tiempo diferentes.
 
 ```{r}
 # Hacemos el post-hoc
@@ -321,7 +321,7 @@ prueba4 <- friedman.test(Tiempo ~ Algoritmo|instancia, data = datos4)
 prueba4
 ```
 
-Como nuestro p-value es menor a el nivel de significancia, podemos decir con un 95% de confianza, que se rechaza la hipotesis nula, a favor de la hipotesis alternativa, osea, al comparar las mismas instancias con iguales características, las mejores soluciones encontradas por las diferentes versiones del algoritmo tienen rendimientos distintos.
+Como nuestro p-value es menor al nivel de significancia, podemos decir con un 95% de confianza, que se rechaza la hipotesis nula, a favor de la hipotesis alternativa, osea, al comparar las mismas instancias con iguales características, las mejores soluciones encontradas por las diferentes versiones del algoritmo tienen rendimientos distintos.
 
 Procederemos a usar un procedimiento post-hoc.
 
@@ -334,4 +334,4 @@ post_hoc4
 
 ```
 
-Como se puede ver en el procedimiento post-hoc, podemos concluir con un 95% de confianza que existen diferencias significativas entre los tiempos de ejecución de todos los pares de algoritmos, excepto entre los algoritmos B y C.
+Como se puede ver en el procedimiento post-hoc, podemos concluir con un nivel de confianza del 95% que existen diferencias significativas entre los tiempos de ejecución de todos los pares de algoritmos, excepto entre los algoritmos B y C.
