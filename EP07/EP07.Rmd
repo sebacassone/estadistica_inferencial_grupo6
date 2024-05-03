@@ -9,6 +9,13 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+<<<<<<< HEAD
+=======
+# Enunciado
+En el trabajo de título de una estudiante del DIINF se reportan tiempos de ejecución (en milisegundos) y la cercanía con la solución óptima (en por ciento) de la mejor solución encontrada con tres versiones de un algoritmo genético para resolver instancias del problema del vendedor viajero disponibles en repositorios públicos. Ahora debe enfrentar el análisis de estos datos, por que está solicitando ayuda de las y los estudiantes de Estadística Inferencial.
+
+
+>>>>>>> a4231315484c4c5119e4a65319cbfe29e58c765a
 ```{r}
 # Importamos las librerías
 library(dplyr)
@@ -28,15 +35,12 @@ datos <- read.csv(ruta, sep = ",")
 datos
 ```
 
-# Enunciado
-En el trabajo de título de una estudiante del DIINF se reportan tiempos de ejecución (en milisegundos) y la cercanía con la solución óptima (en por ciento) de la mejor solución encontrada con tres versiones de un algoritmo genético para resolver instancias del problema del vendedor viajero disponibles en repositorios públicos. Ahora debe enfrentar el análisis de estos datos, por que está solicitando ayuda de las y los estudiantes de Estadística Inferencial.
+
 
 # Pregunta
-## 1. 
+1. Observando los datos, la memorista sospecha que hay diferencias significativas en el tiempo de ejecución entre las versiones A y C del algoritmo cuando las instancias tienen 60 o más nodos. ¿Los datos respaldan la intuición de la memorista?
 
-### Observando los datos, la memorista sospecha que hay diferencias significativas en el tiempo de ejecución entre las versiones A y C del algoritmo cuando las instancias tienen 60 o más nodos. ¿Los datos respaldan la intuición de la memorista?
-
-### Para responder, filtren los datos para tener las instancias con 60 o más nodos y seleccionen las columnas de los tiempos de ejecución de las versiones A y C en formato ancho. Usando como semilla el valor 33, obtenga muestras aleatorias independientes de 24 tiempos registrados por la versión A y 18 tiempos registrados por la versión C del algoritmo. Realicen un análisis estadístico pertinente (enunciar hipótesis, revisar condiciones, seleccionar prueba) para responder la pregunta planteada, utilizando pruebas no paramétricas de ser necesario.
+Para responder, filtren los datos para tener las instancias con 60 o más nodos y seleccionen las columnas de los tiempos de ejecución de las versiones A y C en formato ancho. Usando como semilla el valor 33, obtenga muestras aleatorias independientes de 24 tiempos registrados por la versión A y 18 tiempos registrados por la versión C del algoritmo. Realicen un análisis estadístico pertinente (enunciar hipótesis, revisar condiciones, seleccionar prueba) para responder la pregunta planteada, utilizando pruebas no paramétricas de ser necesario.
 
 ```{r}
 # Fijamos la semilla
@@ -61,7 +65,9 @@ muestras_C <- datos_filtrados1 %>%
   select(tiempo.C) %>%
   sample_n(18)
 ```
-Primero probaremos la normalidad de los datos con Shapiro-Wilk
+
+Primero probaremos la normalidad de los datos con Shapiro-Wilk.
+
 ```{r}
 # Comprobamos la normalidad de los datos con el test de Shapiro
 shapiro_A <- shapiro.test(muestras_A$tiempo.A)
@@ -69,17 +75,19 @@ shapiro_C <- shapiro.test(muestras_C$tiempo.C)
 shapiro_A
 shapiro_C
 ```
-Como nuestro el p value de la prueba shapiro en las muestras de A es menor a nuestro nivel de significancia (alfa = 0.05), podemos decir que las observaciones no siguen una distribución normal.
 
-Como no siguen una distribución normal y los datos son muestras independientes, se usara la prueba no parametrica "Prueba de Wilcoxon", ya que no se puede usar la prueba t studenen ni la z.
 
-Las condicions para la Prueba de rangos  de Wilcoxon son :
+Como el valor p de la prueba Shapiro-Wilk en las muestras de A es menor que nuestro nivel de significancia (alfa = 0.05), podemos concluir que las observaciones no siguen una distribución normal.
+
+Como no siguen una distribución normal y los datos son muestras independientes, se usara la prueba no paramétrica "Prueba de Sumas de Rangos de Wilcoxon", ya que no se puede usar la prueba t student ni la prueba z debido falta de normalidad.
+
+Las condiciones para la prueba de rangos de Wilcoxon son:
  - 1. Los pares de observaciones son independientes
  - 2. La escala de medicón empleada para ambas muestras debe ser a lo menos ordinal
 
-La condición 1 se cumple porque cada instancia no depende de la otra, la condición 2 se cumple ya que los datos son cuantitativos y continuos
+La condición 1 se cumple porque cada instancia no depende de la otra, la condición 2 se cumple ya que los datos son cuantitativos y continuos.
 
-Ho: No hay diferencia en el tiempo de los algoritmos con respecto la mediana de los tiempos de ejecución entre las versiones A y C del algoritmo para instancias con 60 o más nodos.
+Ho: No hay diferencia en el tiempo de los algoritmos con respecto la mediana de los tiempos de ejecución entre las versiones A y C del algoritmo, para instancias con 60 o más nodos.
 
 Ha: Existe una diferencia en la mediana de los tiempos de ejecución entre las versiones A y C del algoritmo para instancias con 60 o más nodos.
 
@@ -96,18 +104,15 @@ print(prueba1)
 Como nuestro p-value = 0.9299 y este es mayor que la significancia considerada para este experimento de 0.05, no se puede rechazar la hipótesis nula que no hay diferencia en el tiempo de los algoritmos con respecto la mediana de los tiempos de ejecución entre las versiones A y C del algoritmo para instancias con 60 o más nodos.
 
 
-## 2. 
+2. La memorista también sospecha que, al comparar las mismas instancias de iguales características, las mejores soluciones encontradas por las versiones A y B tienen rendimientos distintos. ¿Estará en lo cierto?
 
-### La memorista también sospecha que, al comparar las mismas instancias de iguales características, las mejores soluciones encontradas por las versiones A y B tienen rendimientos distintos. ¿Estará en lo cierto?
-
-### Para responder, filtren los datos para tener las instancias con 60 o más nodos y seleccionen las columnas con el mejor rendimiento de las versiones A y B en formato ancho. Usando como semilla el valor 33, obtengan una muestra aleatoria de 22 instancias. Realicen un análisis estadístico pertinente (enunciar hipótesis, revisar condiciones, seleccionar prueba) para responder la pregunta planteada, utilizando pruebas no paramétricas de ser necesario.
+Para responder, filtren los datos para tener las instancias con 60 o más nodos y seleccionen las columnas con el mejor rendimiento de las versiones A y B en formato ancho. Usando como semilla el valor 33, obtengan una muestra aleatoria de 22 instancias. Realicen un análisis estadístico pertinente (enunciar hipótesis, revisar condiciones, seleccionar prueba) para responder la pregunta planteada, utilizando pruebas no paramétricas de ser necesario.
 
 Como son muestras apareadas, usaremos la prueba de rangos con signo de Wilcoxon, las condiciones para esta prueba son:
 
-1. Los pares de observaciones son independientes
-2. La escala de medición empleada para las observaciones es intrinsecamente continua.
-3. La escala de mediciones empleada para ambas muestras debe ser a lo menos ordinal
-
+1. Los pares de observaciones son independientes.
+2. La escala de medición empleada para las observaciones es intrínsecamente continua.
+3. La escala de mediciones empleada para ambas muestras debe ser a lo menos ordinal.
 
 ```{r}
 # Fijamos la semilla
@@ -125,9 +130,8 @@ datos_filtrados2 <- datos_60Nodos2 %>%
 datos_aleatorios2 <- sample_n(datos_filtrados2, 22)
 ```
 
+Primero probaremos la normalidad de los datos con Shapiro-Wilk.
 
-
-Primero probaremos la normalidad de los datos con Shapiro-Wilk
 ```{r}
 # Comprobamos la normalidad de los datos con el test de Shapiro
 
@@ -139,20 +143,21 @@ shapiro_2 <- shapiro.test(A_less_B)
 shapiro_2
 ```
 
-Como nuestro el p value de la prueba shapiro en las muestras de A es menor a nuestro nivel de significancia (alfa = 0.05), podemos decir que las observaciones no siguen una distribución normal.
+Como nuestro el p-value de la prueba Shapiro-Wilk en las muestras de A es menor a nuestro nivel de significancia (alfa = 0.05), podemos decir que las observaciones no siguen una distribución normal.
 
-Como no siguen una distribución normal y los datos son muestras independientes, se usara la prueba no parametrica "Prueba de rangos con signo de Wilcoxon", ya que no se puede usar la prueba t studenen ni la z y los datos son correlacionados. Las condiciones para esta prueba son:
+Como no siguen una distribución normal y los datos son muestras independientes, se usara la prueba no paramétrica "prueba de rangos con signo de Wilcoxon", ya que no se puede usar la prueba t studenen ni la z y los datos son correlacionados. Las condiciones para esta prueba son:
 
-1. Los pares de observaciones son independientes
-2. La escala de medición empleada para las observaciones es intrinsecamente continua.
-3. La escala de mediciones empleada para ambas muestras debe ser a lo menos ordinal
+1. Los pares de observaciones son independientes.
+2. La escala de medición empleada para las observaciones es intrínsecamente continua.
+3. La escala de mediciones empleada para ambas muestras debe ser a lo menos ordinal.
 
 Los pares de observaciones son elegidos aleatoriamente, por lo que se cumple la condición 1, la escala de medición empleada en las observaciones es el tiempo, por lo que la hace una escala continua y mejor que ordinal, ya que los datos son cuantitativos, cumpliendose las condiciones 2 y 3 respectivamente.
 
-Ho: Las mejores soluciones encontradas por las versiones A y B tienen rendimientos iguales
-Ha: Las mejores soluciones encontradas por las versiones A y B tienen rendimientos distintos
+Ho: Las mejores soluciones encontradas por las versiones A y B tienen rendimientos iguales.
+Ha: Las mejores soluciones encontradas por las versiones A y B tienen rendimientos distintos.
 
-Procedemos a usar la prueba de rangos con signos
+Procedemos a usar la prueba de rangos con signos.
+
 ```{r}
 alfa <- 0.05
 
@@ -160,14 +165,13 @@ alfa <- 0.05
 prueba2 <- wilcox.test(datos_aleatorios2$mejor.A, datos_aleatorios2$mejor.B, alternative = "two.sided", paired = TRUE, conf.level = 1 - alfa)
 prueba2
 ```
-Como nuestro p.value es menor a nuestro nivel de significancia (alfa = 0.05), podemos decir con un 95% de certeza, que se rechaza la hipotesis nula a favor de la hipotesis alternativa, entonces, podemos decir que al comparar las mismas instancias de iguales características, las mejores soluciones encontradas por las versiones A y B tienen rendimientos distintos. 
 
 
-## 3.-
+Como nuestro p-value es menor a nuestro nivel de significancia (alfa = 0.05), podemos decir con un 95% de certeza, que se rechaza la hipotesis nula a favor de la hipotesis alternativa, entonces, podemos decir que al comparar las mismas instancias de iguales características, las mejores soluciones encontradas por las versiones A y B tienen rendimientos distintos. 
 
-### La memorista sospecha que hay diferencias significativas en el tiempo de ejecución entre las versiones del algoritmo cuando las instancias de prueba tienen 45 o más nodos. ¿Los datos respaldan la intuición de la memorista?
-### Para responder, filtren los datos para tener las instancias con 45 o más nodos y seleccionen las columnas con los tiempos de ejecución registrados (en formato ancho). Usando como semilla el valor 43, obtengan muestras aleatorias independientes de 15, 15 y 14 tiempos registrados por las versiones A, B y C, respectivamente. Realicen un análisis estadístico pertinente (enunciar hipótesis, revisar condiciones, seleccionar prueba) para responder la pregunta planteada, utilizando pruebas no paramétricas de ser necesario.
+3- La memorista sospecha que hay diferencias significativas en el tiempo de ejecución entre las versiones del algoritmo cuando las instancias de prueba tienen 45 o más nodos. ¿Los datos respaldan la intuición de la memorista?
 
+Para responder, filtren los datos para tener las instancias con 45 o más nodos y seleccionen las columnas con los tiempos de ejecución registrados (en formato ancho). Usando como semilla el valor 43, obtengan muestras aleatorias independientes de 15, 15 y 14 tiempos registrados por las versiones A, B y C, respectivamente. Realicen un análisis estadístico pertinente (enunciar hipótesis, revisar condiciones, seleccionar prueba) para responder la pregunta planteada, utilizando pruebas no paramétricas de ser necesario.
 
 ```{r}
 # Fijamos la semilla
@@ -199,7 +203,8 @@ muestras_3.C <- datos_filtrados3 %>%
   sample_n(15)
 ```
 
-Primero, probaremos la normalidad de los datos con el test de Shapiro
+Primero, probaremos la normalidad de los datos con el test de Shapiro-Wilk.
+
 ```{r}
 # Comprobamos la normalidad de los datos con el test de Shapiro
 shapiro_3.A <- shapiro.test(muestras_3.A$tiempo.A)
@@ -209,17 +214,20 @@ shapiro_3.A
 shapiro_3.B
 shapiro_3.C
 ```
-Como el p.value de los tiempos de A, es menor a nuestro nivel de significancia (alfa = 0.05), los datos ya no siguen una distribución normal, por lo que tendremos que usar una prueba no parametrica.
+
+
+Como el p-value de los tiempos de A, es menor a nuestro nivel de significancia (alfa = 0.05), los datos ya no siguen una distribución normal, por lo que tendremos que usar una prueba no parametrica.
 
 Como son más de 2 muestras y los datos son independiente, usaremos Kruskal-Wallis.
 
 Las condiciones de esta prueba son:
 
   1. La variable independiente debe tener a lo menos dos niveles.
-  2. La escala de la variable dependiente debe ser, a lo menos ordinal
+
+  2. La escala de la variable dependiente debe ser, a lo menos ordinal.
   3. Las observacones son indepenientes entre sí.
   
-- La condición 1 es cumple ya que, son 3 instancias (A,B o C), por lo que serian 3 niveles <--- revisar
+- La condición 1 es cumple ya que, son 3 instancias (A,B o C), por lo que serian 3 niveles.
 - La condición 2 se cumple ya que la variable dependiente es el tiempo, y como es continuo la hace mejor que ordinal.
 -La condición 3 se cumple ya que las muestras se eligen de forma aleatoria y entre par de observaciones son independientes.
 
@@ -242,10 +250,9 @@ prueba3 <- kruskal.test(Tiempo ~ Algoritmo, data = datos3)
 prueba3
 ```
 
-
 Como nuestro p.value es menor a nuestro nivel de significancia (alfa = 0.05), podemos decir con un 95% de certeza, que se rechaza la hipotesis nula a favor de la hipotesis alternativa, entonces, podemos decir que hay diferencias significativas en el tiempo de ejecución entre las versiones del algoritmo cuando las instancias de prueba tienen 45 o más nodos.
 
-Ahora hacemos el procedimiento post-hoc, para saber cual es el algoritmo que tiene tiempo diferentes
+Ahora hacemos el procedimiento post-hoc, para saber cúal es el algoritmo que tiene tiempo diferentes.
 
 ```{r}
 # Hacemos el post-hoc
@@ -255,12 +262,14 @@ post_hoc3 <- pairwise.wilcox.test(datos3$Tiempo, datos3$Algoritmo,
 )
 post_hoc3
 ```
+
+
 Como se puede ver en el procedimiento post-hoc, podemos concluir con un 95% de confianza que existen diferencias significativas entre los tiempos de ejecución de todos los pares de algoritmos excepto los algoritmos A y C.
 
 
-## 4.-
-### La memorista también sospecha que, al comparar las mismas instancias con iguales características, las mejores soluciones encontradas por las diferentes versiones del algoritmo tienen rendimientos distintos. ¿Estará en lo cierto?
-### Para responder, filtren los datos para tener las instancias con 45 o más nodos y seleccionen las columnas con los mejores rendimientos registrados. Usando como semilla el valor 71, obtengan una muestra aleatoria de 23 instancias. Realicen un análisis estadístico pertinente (enunciar hipótesis, revisar condiciones, seleccionar prueba) para responder la pregunta planteada, utilizando pruebas no paramétricas de ser necesario.
+4.- La memorista también sospecha que, al comparar las mismas instancias con iguales características, las mejores soluciones encontradas por las diferentes versiones del algoritmo tienen rendimientos distintos. ¿Estará en lo cierto?
+
+Para responder, filtren los datos para tener las instancias con 45 o más nodos y seleccionen las columnas con los mejores rendimientos registrados. Usando como semilla el valor 71, obtengan una muestra aleatoria de 23 instancias. Realicen un análisis estadístico pertinente (enunciar hipótesis, revisar condiciones, seleccionar prueba) para responder la pregunta planteada, utilizando pruebas no paramétricas de ser necesario.
 
 ```{r}
 # Fijamos la semilla
@@ -278,8 +287,8 @@ datos_filtrados4 <- datos_45Nodos4 %>%
 datos_aleatorios4 <- sample_n(datos_filtrados4, 23)
 
 ```
+Primero revisamos la normalidad de los datos con Shapiro-Wilk.
 
-Primero revisamos la normalidad de los datos con Shapiro-Wilk
 ```{r}
 #Proabmos normalidad de los datos, en la resta de cada par de muestras
 A_less_B_less_C <- datos_aleatorios4$mejor.A - datos_aleatorios4$mejor.B - datos_aleatorios4$mejor.C
@@ -289,22 +298,23 @@ shapiro_4 <- shapiro.test(A_less_B_less_C)
 shapiro_4
 
 ```
+
+
 Como se ve en las pruebas, el p-values es menor a nuestro nivel de significancia (alfa=0,05), por lo tanto los datos no siguen una distribución normal. 
 
-Como no sigue una distribución normal, consideraremos alguna prueba parametrica, como son más de 2 muestras y los datos estan correlacionados, usaremos la prueba de Frideman.
+Como no sigue una distribución normal, consideraremos alguna prueba paramétrica, como son más de 2 muestras y los datos estan correlacionados, usaremos la prueba de Frideman.
 
 Las condiciones de esta prueba son:
 
   1.- La variable independiente debe ser categórica y tener al menos tres niveles.
   2.- La escala de la variable dependiente debe ser, a lo menos, ordinal.
   3.- Las observaciones son una muestra aleatoria e independiente de la población.
-  
-
-- La condición 1 es cumple ya que, son 3 instancias (A,B o C), por lo que serian 3 niveles 
+ 
+- La condición 1 es cumple ya que, son 3 instancias (A,B o C), por lo que serian 3 niveles.
 - La condición 2 se cumple ya que la variable dependiente es el tiempo, y como es continuo la hace mejor que ordinal.
 - La condición 3 se cumple ya que las muestras se eligen de forma aleatoria y entre par de observaciones son independientes.
 
-Ho: al comparar las mismas instancias con iguales características, las mejores soluciones encontradas por las diferentes versiones del algoritmo tienen rendimientos iguales.
+Ho: Al comparar las mismas instancias con iguales características, las mejores soluciones encontradas por las diferentes versiones del algoritmo tienen rendimientos iguales.
 Ha: Al comparar las mismas instancias con iguales características, las mejores soluciones encontradas por las diferentes versiones del algoritmo tienen rendimientos distintos.
 
 
@@ -320,9 +330,12 @@ datos4 <- datos_aleatorios4%>% pivot_longer(c("mejor.A", "mejor.B", "mejor.C"),
 prueba4 <- friedman.test(Tiempo ~ Algoritmo|instancia, data = datos4)
 prueba4
 ```
-Como nuestro p-values es menor a el nivel de significancia, podemos decir con un 95% de confianza, que se rechaza la hipotesis nula, a favor de la hipotesis alternativa, osea, al comparar las mismas instancias con iguales características, las mejores soluciones encontradas por las diferentes versiones del algoritmo tienen rendimientos distintos.
 
-Procederemos a usar un procedimiento post-hoc
+
+Como nuestro p-value es menor al nivel de significancia, podemos decir con un 95% de confianza, que se rechaza la hipotesis nula, a favor de la hipotesis alternativa, osea, al comparar las mismas instancias con iguales características, las mejores soluciones encontradas por las diferentes versiones del algoritmo tienen rendimientos distintos.
+
+Procederemos a usar un procedimiento post-hoc.
+
 ```{r}
 post_hoc4 <- pairwise.wilcox.test(datos4$Tiempo,
                                   datos4$Algoritmo,
@@ -331,4 +344,6 @@ post_hoc4 <- pairwise.wilcox.test(datos4$Tiempo,
 post_hoc4
 
 ```
-Como se puede ver en el procedimiento post-hoc, podemos concluir con un 95% de confianza que existen diferencias significativas entre los tiempos de ejecución de todos los pares de algoritmos, excepto entre los algoritmos B y C.
+
+
+Como se puede ver en el procedimiento post-hoc, podemos concluir con un nivel de confianza del 95% que existen diferencias significativas entre los tiempos de ejecución de todos los pares de algoritmos, excepto entre los algoritmos B y C.
