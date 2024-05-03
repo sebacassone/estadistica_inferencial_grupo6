@@ -27,10 +27,195 @@ Para el trabajo posterior, primero se leerá el archivo CSV.
 # Lectura de archivo
 # Se abre el CSV, cambiar la ruta según corresponda
 nombre_archivo <- "EP08 Datos CASEN 2017.csv"
-carpeta_direccion <- "~/Documentos/ejercicios_R/EI/estadistica_inferencial_grupo6/EP08"
+carpeta_direccion <-"C:\\Users\\BastiánBritoGarrido\\Desktop\\estadistica_inferencial_grupo6\\EP08" #"~/Documentos/ejercicios_R/EI/estadistica_inferencial_grupo6/EP08"
 ruta <- file.path(carpeta_direccion, nombre_archivo)
 datos <- read.csv2(ruta)
+
+library(dplyr)
+library(ggpubr)
 ```
+
+
+# Pregunta 1
+Propongan una pregunta de investigación original, que involucre la comparación de una frecuencia de un evento o característica en dos grupos independientes (más abajo se dan unos ejemplos). Fijando una semilla propia, seleccionen una muestra aleatoria de hogares (100 < n < 150) y respondan la pregunta propuesta utilizando el método Monte Carlo.
+
+
+Pregunta: "¿Existe una diferencia significativa en la frecuencia de horas de trabajo por semana (o10), entre dos grupos demográficos diferentes, personas de ciudad (Región Metropolitana) y Personas de Región (Fuera de la Región Metropolitana)?"
+
+Para ver si existe alguna diferencia significativa en la horas de trabajo de las personas dentro y fuera de la Región Metropolitana, usaremos el esatdistico de la media
+
+
+Ho: No existe una diferencia significativa en la frecuencia de horas de trabajo por semana, entre dos grupos demográficos diferentes, personas de ciudad (Región Metropolitana) y Personas de Región (Fuera de la Región Metropolitana)
+
+Ha: Existe una diferencia significativa en la frecuencia de horas de trabajo por semana, entre dos grupos demográficos diferentes, personas de ciudad (Región Metropolitana) y Personas de Región (Fuera de la Región Metropolitana)
+
+
+
+```{r}
+#Establecemos semilla y cantidad de repeticiones
+set.seed(9)
+R = 4999
+
+# Función para obtener una permutación.
+# Argumentos:
+# - i: iterador (para llamadas posteriores).
+# - muestra_1, muestra_2: muestras.
+# Valor:
+# - lista con las muestras resultantes tras la permutación.
+obtiene_permutacion <- function(i, muestra_1, muestra_2) {
+  n_1 <- length(muestra_1)
+  combinada <- c(muestra_1, muestra_2)
+  n <- length(combinada)
+  permutacion <- sample(combinada, n, replace = FALSE)
+  nueva_1 <- permutacion[1:n_1]
+  nueva_2 <- permutacion[(n_1+1):n]
+  return(list(nueva_1, nueva_2))
+}
+
+# Función para calcular la diferencia de un estadístico de interés entre las
+# dos muestras.
+# Argumentos:
+# - muestras: lista con las muestras.
+# - FUN: nombre de la función que calcula el estadístico de interés.
+# Valor:
+# - diferencia de un estadístico para dos muestras.
+calcular_diferencia <- function(muestras, FUN) {
+  muestra_1 <- muestras[[1]]
+  muestra_2 <- muestras[[2]]
+  diferencia <- FUN(muestra_1) - FUN(muestra_2)
+  return(diferencia)
+}
+
+
+# Función para calcular el valor p.
+# Argumentos:
+# - distribucion: distribución nula del estadístico de interés.
+# - valor_observado: valor del estadístico de interés para las muestras
+#   originales.
+# - repeticiones: cantidad de permutaciones a realizar.
+# - alternative: tipo de hipótesis alternativa. "two.sided" para
+#   hipótesis bilateral, "greater" o "less" para hipótesis unilaterales.
+# Valor:
+# - el valor p calculado.
+calcular_valor_p <- function(distribucion, valor_observado, repeticiones, alternative) {
+  if (alternative == "two.sided") {
+    numerador <- sum(abs(distribucion) > abs(valor_observado)) + 1
+    denominador <- repeticiones + 1
+    valor_p <- numerador / denominador
+  } else if (alternative == "greater") {
+    numerador <- sum(distribucion > valor_observado) + 1
+    denominador <- repeticiones + 1
+    valor_p <- numerador / denominador
+  } else {
+    numerador <- sum(distribucion < valor_observado) + 1
+    denominador <- repeticiones + 1
+    valor_p <- numerador / denominador
+  }
+
+  return(valor_p)
+}
+
+  
+# Función para graficar una distribución.
+# Argumentos:
+# - distribucion: distribución nula del estadístico de interés.
+# - ...: otros argumentos a ser entregados a ggihistogram y ggqqplot.
+graficar_distribucion <- function(distribucion, ...) {
+  observaciones <- data.frame(distribucion)
+  histograma <- gghistogram(observaciones, x = "distribucion", 
+                             xlab = "Estadístico de interés", 
+                             ylab = "Frecuencia", bins = 30, ...)
+  qq <- ggqqplot(observaciones, x = "distribucion", ...)
+
+  # Crear una única figura con todos los gráficos de dispersión.
+  figura <- ggarrange(histograma, qq, ncol = 2, nrow = 1)
+  print(figura)
+}
+
+
+# Función para hacer la prueba de permutaciones.
+# Argumentos:
+# - muestra_1, muestra_2: vectores numéricos con las muestras a comparar.
+# - repeticiones: cantidad de permutaciones a realizar.
+# - FUN: función del estadístico E para el que se calcula la diferencia.
+# - alternative: tipo de hipótesis alternativa. "two.sided" para 
+#   hipótesis bilateral, "greater" o "less" para hipótesis unilaterales.
+# - plot: si es TRUE, construye el gráfico de la distribución generada.
+# - ...: otros argumentos a ser entregados a graficar_distribucion.
+contrastar_hipotesis_permutaciones <- function(muestra_1, muestra_2,
+                                               repeticiones, FUN, alternative, plot, ...) {
+  cat("Prueba de permutaciones\n\n")
+  cat("Hipótesis alternativa:", alternative, "\n")
+  observado <- calcular_diferencia(list(muestra_1, muestra_2), FUN)
+  cat("Valor observado:", observado, "\n")
+
+  n_1 <- length(muestra_1)
+
+  # Generar permutaciones.
+  permutaciones <- lapply(1:repeticiones, obtiene_permutacion, muestra_1, muestra_2)
+
+  # Generar la distribución.
+  distribucion <- sapply(permutaciones, calcular_diferencia, FUN)
+
+  # Graficar la distribución.
+  if (plot) {
+    graficar_distribucion(distribucion, ...)
+  }
+
+  # Calcular el valor p.
+  valor_p <- calcular_valor_p(distribucion, observado, repeticiones, alternative)
+
+  cat("Valor p:", valor_p, "\n\n")
+}
+
+
+
+```
+
+
+```{r}
+
+#Filtramos los datos por las personas que trabajan
+datos1 <- datos %>%
+  filter(oficio1 != "NA")
+
+#Separamos las muestras entre las personas de la Region Metropolitana y las que no
+Datos_Santiago <- datos1 %>%
+  filter(region == "Regi�n Metropolitana de Santiago")
+
+Datos_Region <- datos1 %>%
+  filter(region != "Regi�n Metropolitana de Santiago")
+
+#Fijamos el numero de muestras
+n <- 125
+sample_santiago <- Datos_Santiago[sample(nrow(Datos_Santiago),n),];
+sample_region <- Datos_Region[sample(nrow(Datos_Region),n),];
+
+
+
+shapiro_R <- shapiro.test(sample_region$o10)
+shapiro_S <- shapiro.test(sample_santiago$o10)
+shapiro_R
+shapiro_S
+```
+
+Como el valor p de los test Shapiro Wilk Test es menor a nuestro nivel de significancia (0.05) significa que nuestros datos no siguen una distribución nomral, así que procedermos a usar la Simulacion de Monte Carlo.
+
+
+```{r}
+
+
+# Hacer pruebas de permutaciones para la media y la varianza.
+
+contrastar_hipotesis_permutaciones(sample_santiago$o10, sample_region$o10, repeticiones = R, FUN = mean,
+                                   alternative = "two.sided", plot = TRUE,
+                                   color = "blue", fill = "blue")
+
+```
+Tras realizar la prueba, observamos que la distribución se asemeja en gran medida a una distribución normal, aunque presenta ciertas asimetrías en los extremos. El valor p obtenido para el contraste es de 0.4366, que supera nuestro nivel de significancia establecido en 0.05. Por lo tanto, podemos concluir con un 95% de confianza que no existe evidencia suficiente para afirmar que hay diferencias significativas en las horas trabajadas entre las personas que residen fuera de la Región Metropolitana y aquellas dentro de la Región Metropolitana.
+
+
+
 
 Pregunta 2. ¿Serán iguales las medias de ingresos entre las personas que estudiaron en una Universidad Estatal, CFT, e IP, en la región metropolitana? Determine cuales son las personas de instituciones de mayores ingresos y de menores ingresos. Se va a fijar la semilla 321.
 
@@ -43,7 +228,7 @@ Variables a usar:
 Primero se obtienen los datos que se van a trabajar.
 
 ```{r cars}
-library(dplyr)
+
 # Se obtienen las muestras de interés
 # Fijamos la semilla
 set.seed(321)
